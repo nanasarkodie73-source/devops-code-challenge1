@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import './App.css';
-import API_URL from './config'
+import config from './config'
 
 function App() {
-  const [successMessage, setSuccessMessage] = useState() 
-  const [failureMessage, setFailureMessage] = useState() 
+  const [successMessage, setSuccessMessage] = useState()
+  const [failureMessage, setFailureMessage] = useState()
 
   useEffect(() => {
     const getId = async () => {
       try {
-        const resp = await fetch(API_URL)
+        const resp = await fetch(config.backendUrl)
         setSuccessMessage((await resp.json()).id)
       }
       catch(e) {
@@ -17,7 +17,7 @@ function App() {
       }
     }
     getId()
-  })
+  }, [])
 
   return (
     <div className="App">
