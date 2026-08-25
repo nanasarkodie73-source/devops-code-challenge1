@@ -6,12 +6,12 @@ on:
       - gitops
 
 env:
-  AWS_REGION: <region-your-project is located>
-  ECR_FRONTEND: <your-account-id>.dkr.ecr.<region>.amazonaws.com/<your-frontend-repo>
-  ECR_BACKEND: <your-account-id>.dkr.ecr.<region>.amazonaws.com/<your-backend-repo>
-  CLUSTER_NAME: <your-ecs-cluster-name>
-  FRONTEND_SVC: <your-frontend-service-name>
-  BACKEND_SVC: <your-backend-service-name>
+  AWS_REGION: us-east-1
+  ECR_FRONTEND: 996028738165.dkr.ecr.us-east-1.amazonaws.com/devops-challenge-frontend
+  ECR_BACKEND: 996028738165.dkr.ecr.us-east-1.amazonaws.com/devops-challenge-backend
+  CLUSTER_NAME: devops-challenge-cluster
+  FRONTEND_SVC: devops-challenge-frontend-service
+  BACKEND_SVC: devops-challenge-backend-service
 
 jobs:
   build-and-deploy:
@@ -23,12 +23,12 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::<your-account-id>:role/<your-oidc-role-name>
+          role-to-assume: arn:aws:iam::996028738165:role/GitHubActions-ECS-Deploy-Role
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Login to Amazon ECR
@@ -49,9 +49,16 @@ jobs:
 
       - name: Update ECS frontend service
         run: |
-          aws ecs update-service --cluster $CLUSTER_NAME --service $FRONTEND_SVC --force-new-deployment --region $AWS_REGION
+          aws ecs update-service \
+            --cluster $CLUSTER_NAME \
+            --service $FRONTEND_SVC \
+            --force-new-deployment \
+            --region $AWS_REGION
 
       - name: Update ECS backend service
         run: |
-          aws ecs update-service --cluster $CLUSTER_NAME --service $BACKEND_SVC --force-new-deployment --region $AWS_REGION
-
+          aws ecs update-service \
+            --cluster $CLUSTER_NAME \
+            --service $BACKEND_SVC \
+            --force-new-deployment \
+            --region $AWS_REGION
