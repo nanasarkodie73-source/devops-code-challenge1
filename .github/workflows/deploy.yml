@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - gitops
+  workflow_dispatch:    
 
 env:
   AWS_REGION: us-east-1
